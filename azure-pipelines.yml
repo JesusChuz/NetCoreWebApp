@@ -82,5 +82,5 @@ stages:
           azureSubscription: '2b2c433d-d403-41c0-8e55-b03faa05f31c'
           appType: 'webApp'
           WebAppName: 'jesumewebappupdatesettings'
-          JSONFiles: '**/appsettingssssssssss.json'
+          JSONFiles: '**/appsettings.json'
           packageForLinux: '$(Build.ArtifactStagingDirectory)/**/WebApplication1.zip'
