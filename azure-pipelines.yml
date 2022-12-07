@@ -1,0 +1,86 @@
+# ASP.NET
+# Build and test ASP.NET projects.
+# Add steps that publish symbols, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
+
+trigger:
+- master
+variables:
+  buildConfiguration: 'Debug'
+  vmImageName: 'windows-latest'
+  system.debug: 'true'
+
+stages:
+- stage: Build
+  displayName: Build
+  jobs:
+    - job: Build
+      displayName: Build   
+      pool:
+        vmImage: $(vmImageName)
+      variables:
+      - name: Settings.ApiUrl
+        value: "https://dev.ifill.com"
+      steps:
+      - checkout: self
+        submodules: true
+      - task: NuGetToolInstaller@0
+        displayName: 'Use NuGet 5.8.0'
+        inputs:
+          versionSpec: 5.8.0
+      - task: UseDotNet@2
+        displayName: "Install .NET Core SDK"
+        inputs:
+          packageType: 'sdk'
+          version: '6.0.203'
+          performMultiLevelLookup: true
+          includePreviewVersions: true # Required for preview versions
+      - task: NuGetCommand@2
+        inputs:
+          command: 'restore'
+          restoreSolution: '**/*.sln'
+          feedsToUse: 'select'
+          vstsFeed: 'b7e9dd5e-7622-49f9-8120-c8c7d52cb164'
+      - task: DotNetCoreCLI@2
+        displayName: Build OMS project
+        inputs:   
+          command: 'build'
+          projects: '**/WebApplication1/WebApplication1.csproj'
+
+- stage: Release
+  displayName: Release stage
+  jobs:
+    - job: Release
+      displayName: Release to Azure
+      pool:
+        vmImage: $(vmImageName)
+      steps:
+      - checkout: self
+        submodules: true
+      - task: UseDotNet@2
+        displayName: "Install .NET Core SDK"
+        inputs:
+          packageType: 'sdk'
+          version: '6.0.203'
+          performMultiLevelLookup: true
+          includePreviewVersions: true # Required for preview versions
+      - task: DotNetCoreCLI@2
+        inputs:
+          command: publish
+          projects: WebApplication1/WebApplication1.csproj
+          publishWebProjects: false
+          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          zipAfterPublish: True
+# this code takes all the files in $(Build.ArtifactStagingDirectory) and uploads them as an artifact of your build.
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'WebApplication1'
+      - task: AzureRmWebAppDeployment@4
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: '2b2c433d-d403-41c0-8e55-b03faa05f31c'
+          appType: 'webApp'
+          WebAppName: 'jesumewebappupdatesettings'
+          JSONFiles: '**/appsettings.json'
+          packageForLinux: '$(Build.ArtifactStagingDirectory)/**/WebApplication1.zip'
