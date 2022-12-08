@@ -9,7 +9,6 @@ variables:
   buildConfiguration: 'Debug'
   vmImageName: 'windows-latest'
   system.debug: 'true'
-  Settings.ApiUrl:  "change" 
   AzureAdB2C.Authority: "changeee"
   NavUrl.PasswordResetUserFlow: "change of password"
   Scopes.ApiAccessScope: "changeagain"
@@ -23,8 +22,7 @@ stages:
       pool:
         vmImage: $(vmImageName)
       variables:
-      - name: Settings.ApiUrl
-        value: "https://dev.ifill.com"
+        Settings.ApiUrl:  "change in build stage" 
       steps:
       - checkout: self
         submodules: true
