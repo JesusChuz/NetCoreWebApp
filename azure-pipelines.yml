@@ -11,7 +11,7 @@ variables:
   system.debug: 'true'
   AzureAdB2C.Authority: "changeee"
   NavUrl.PasswordResetUserFlow: "change of password"
-
+  NavUrl.ADB2CAuthorizeUrl: "Andrey"
 
 stages:
 - stage: Build
@@ -21,9 +21,6 @@ stages:
       displayName: Build   
       pool:
         vmImage: $(vmImageName)
-      variables:
-        Settings.ApiUrl:  "changeinbuildstage" 
-        Scopes.ApiAccessScope: "ScopesChange"
       steps:
       - checkout: self
         submodules: true
