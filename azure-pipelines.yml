@@ -84,16 +84,4 @@ stages:
           WebAppName: 'jesumewebappupdatesettings'
           JSONFiles: '**/appsettings.json'
           packageForLinux: '$(Build.ArtifactStagingDirectory)/**/WebApplication1.zip'
-      - task: AzureAppServiceSettings@1
-        inputs:
-          azureSubscription: 'MAIC - TEK Experts CR - v-jorggr Group#2 (bddf3c59-769c-49a7-a515-6310ce264e6a)'
-          appName: 'jesumewebappupdatesettings'
-          resourceGroupName: 'jesume-testing-webapp-linux'
-          appSettings: |
-            [
-            {
-            "name": "Data.DefaultConnection.ConnectionString",
-            "value": "aaa",
-            "slotSetting": false
-            }
-            ]
+          RuntimeStack: 'DOTNETCORE|6.0'
