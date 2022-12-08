@@ -9,7 +9,6 @@ variables:
   buildConfiguration: 'Debug'
   vmImageName: 'windows-latest'
   system.debug: 'true'
-  Data.DefaultConnection.ConnectionString: "Cambioo"
 
 stages:
 - stage: Build
